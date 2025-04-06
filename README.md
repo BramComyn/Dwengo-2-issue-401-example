@@ -1,59 +1,90 @@
-# AngularTest
+# Dwengo-2 Solution Proposal to issue #401
 
-This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 19.2.6.
+This repository serves as a standalone proposed solution for my [Bachelor's thesis project](https://github.com/SELab-2/Dwengo-2)
+I didn't want to implement the proposed solution to [issue #401](https://github.com/SELab-2/Dwengo-2/issues/401) in the source code.
 
-## Development server
+This way, each team member can have a clear view of what I am proposing, explained in here again:
 
-To start a local development server, run:
+## Proposal
 
-```bash
-ng serve
+The application in the recording is structured as follows:
+
+```
+src
+├── app
+│   ├── app.component.html
+│   ├── app.component.less
+│   ├── app.component.spec.ts
+│   ├── app.component.ts
+│   ├── app.config.ts
+│   ├── app.routes.ts
+│   ├── components
+│   │   ├── error
+│   │   ├── home
+│   │   ├── student-wrapper
+│   │   ├── teacher-wrapper
+│   │   └── wrapper
+│   └── services
+│       ├── authentication.service.spec.ts
+│       ├── authentication.service.ts
+│       ├── usertype.service.spec.ts
+│       └── usertype.service.ts
+├── index.html
+├── main.ts
+└── styles.less
+
+9 directories, 13 files
 ```
 
-Once the server is running, open your browser and navigate to `http://localhost:4200/`. The application will automatically reload whenever you modify any of the source files.
+## Services
 
-## Code scaffolding
+This example uses two services.
+The `AuthenticationService` logs users in and out as their specific usertype
+and allows other components to retrieve the usertype stored in the `localStorage` object.
+The `UsertypeService` has a method to check whether a given user type corresponds to the one stored in `localStorage`
+and will redirect to an `error` route if this isn't the case.
 
-Angular CLI includes powerful code scaffolding tools. To generate a new component, run:
+## Components
 
-```bash
-ng generate component component-name
+The main components of this example are the `WrapperComponent`, `TeacherWrapperComponent` and `StudentWrapperComponent`.
+The `WrapperComponent` plays the role of our common component that we wish to reuse,
+the `<UserType>WrapperComponent` then plays the role of the differentiated components we want to set to the specific routes.
+
+### `WrapperComponent`
+
+Using the input `userType`, which is required, we can check routing type against the logged in user type using the service.
+In se, this implementation is all that is necessary to add to our components, together with updating the HTML-templates.
+
+```ts
+@Component({ ... })
+export class WrapperComponent implements OnInit {
+  @Input({ required: true, alias: 'user-type' }) userType!: 'student' | 'teacher';
+
+  constructor(
+    private usertypeService: UsertypeService,
+    ...
+  ) {}
+
+  ...
+  
+  ngOnInit() {
+    this.usertypeService.checkUserType(this.userType);
+  }
+}
 ```
 
-For a complete list of available schematics (such as `components`, `directives`, or `pipes`), run:
+### Updated HTML-template for `StudentWrapperComponent`
 
-```bash
-ng generate --help
+```html
+<div class="student-content">
+    <app-wrapper [user-type]="'student'"></app-wrapper>
+</div>
 ```
 
-## Building
+### Updated HTML-template for `TeacherWrapperComponent`
 
-To build the project run:
-
-```bash
-ng build
+```html
+<div class="teacher-content">
+    <app-wrapper [user-type]="'teacher'"></app-wrapper>
+</div>
 ```
-
-This will compile your project and store the build artifacts in the `dist/` directory. By default, the production build optimizes your application for performance and speed.
-
-## Running unit tests
-
-To execute unit tests with the [Karma](https://karma-runner.github.io) test runner, use the following command:
-
-```bash
-ng test
-```
-
-## Running end-to-end tests
-
-For end-to-end (e2e) testing, run:
-
-```bash
-ng e2e
-```
-
-Angular CLI does not come with an end-to-end testing framework by default. You can choose one that suits your needs.
-
-## Additional Resources
-
-For more information on using the Angular CLI, including detailed command references, visit the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
