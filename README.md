@@ -5,6 +5,14 @@ I didn't want to implement the proposed solution to [issue #401](https://github.
 
 This way, each team member can have a clear view of what I am proposing, explained in here again:
 
+## Recording
+
+
+
+https://github.com/user-attachments/assets/cca0e37f-c115-41f6-8c4c-f6291af115dd
+
+
+
 ## Proposal
 
 The application in the recording is structured as follows:
